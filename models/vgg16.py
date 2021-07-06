@@ -1,5 +1,4 @@
-import keras
-from layer import *
+from models.layer import *
 
 class VGGNET16:
     def __init__(self,input_shape, class_num, weight_decay=0.0001):
@@ -14,15 +13,15 @@ class VGGNET16:
                          padding="same", activation="relu", regularizer=self.l2_reg)
         block1 = conv_bn(block1, filter_size=64, kernel_size=(3, 3), strides=1,
                          padding="same", activation="relu", regularizer=self.l2_reg)
-        # block1_out = keras.layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(block1)
+        block1_out = keras.layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(block1)
 
         '''16 x 16'''
-        block2 = conv_bn(block1, filter_size=128, kernel_size=(3, 3), strides=1,
+        block2 = conv_bn(block1_out, filter_size=128, kernel_size=(3, 3), strides=1,
                          padding="same", activation="relu", regularizer=self.l2_reg)
         block2 = conv_bn(block2, filter_size=128, kernel_size=(3, 3), strides=1,
                          padding="same", activation="relu", regularizer=self.l2_reg)
-        # block2_out = keras.layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(block2)
-        return block2
+        block2_out = keras.layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2))(block2)
+        return block2_out
 
     def vggnet_body(self, inputs):
         '''8 x 8'''

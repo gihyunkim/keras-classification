@@ -3,6 +3,7 @@ import os
 import datetime
 from generator import Class_Generator
 from models.resnet import Resnet
+from models.vgg16 import VGGNET16
 from keras.callbacks import TensorBoard, ReduceLROnPlateau, ModelCheckpoint
 
 
@@ -16,7 +17,7 @@ def train():
     optimizer = keras.optimizers.Adam(learning_rate=lr)
     loss = keras.losses.CategoricalCrossentropy()
     metrics = keras.metrics.CategoricalAccuracy()
-    model_name = "resnet"
+    model_name = "vgg"
 
     '''call back'''
     log_dir = "./logs/%s/%s"%(model_name, datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
@@ -30,8 +31,10 @@ def train():
     valid_gen = Class_Generator("./datasets/test/", input_shape, class_num, batch_size, is_train=False)
 
     '''train'''
-    rs = Resnet(input_shape=input_shape, class_num=class_num, layer_num=34)
-    model = rs.resnet()
+    # rs = Resnet(input_shape=input_shape, class_num=class_num, layer_num=34)
+    # model = rs.resnet()
+    vg = VGGNET16(input_shape=input_shape, class_num=class_num, weight_decay=1e-3)
+    model = vg.vggnet()
     model.summary()
     model.compile(optimizer=optimizer, loss=loss, metrics=[metrics])
     model.fit_generator(train_gen, validation_data=valid_gen, epochs=epochs,
