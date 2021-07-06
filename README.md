@@ -15,3 +15,5 @@ keras 2.3.1
 ## Finished Models
 - VGGNet
 - ResNet
+- DenseNet
+- MobileNet_v1
