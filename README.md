@@ -1,6 +1,7 @@
 # keras-classification
 
 This repository has classification models in Keras.
+**Some models are not stable
 
 ## Tested Environment
 os: Windows 10 
@@ -13,7 +14,9 @@ keras 2.3.1
 
 
 ## Finished Models
-- VGGNet
-- ResNet
+- VGGNet(stable)
+- ResNet(stable)
 - DenseNet
 - MobileNet_v1
+- MobileNet_v2
+- MobileNet_v3
