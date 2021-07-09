@@ -27,19 +27,23 @@ class Resnet:
 
     def resnet_stem(self, inputs):
         '''32 x 32'''
-        block1 = conv_bn(inputs, filter_size=64, kernel_size=(7, 7), strides=2,
-                         padding="same", activation="relu", regularizer=self.l2_reg)
+        block1 = keras.layers.Conv2D(filters=64, kernel_size=(7, 7), strides=2, padding="same"
+                                     , kernel_regularizer=self.l2_reg)(inputs)
 
         '''16 x 16'''
         block1_out = keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(2, 2), padding="same")(block1)
         return block1_out
 
     def resnet_body(self, x):
-        for s in range(len(self.layer_sizes)):
+        block_size = len(self.layer_sizes)
+        for s in range(block_size):
             for l in range(self.layer_sizes[s]):
-                if l == 0 and s != 0:
+                if l==0:
+                    x = self.block(x, filter_size=self.filter_list[s], kernel_size=(3,3), strides=1, padding="same",
+                                        activation="relu", regularizer=self.l2_reg, first_layer=True)
+                elif s!=block_size-1 and l==self.layer_sizes[s]-1:
                     x = self.block(x, filter_size=self.filter_list[s], kernel_size=(3,3), strides=2, padding="same",
-                                        activation="relu", regularizer=self.l2_reg)
+                                        activation="relu", regularizer=self.l2_reg, first_layer=False)
                 else:
                     x = self.block(x, filter_size=self.filter_list[s], kernel_size=(3,3), strides=1, padding="same",
                                         activation="relu", regularizer=self.l2_reg)
@@ -54,6 +58,8 @@ class Resnet:
         body_out = self.resnet_body(stem)
 
         '''head'''
-        g_avg = keras.layers.GlobalAveragePooling2D()(body_out)
+        head = keras.layers.BatchNormalization()(body_out)
+        head = keras.layers.Activation("relu")(head)
+        g_avg = keras.layers.GlobalAveragePooling2D()(head)
         fc_out = keras.layers.Dense(units=self.class_num, activation="softmax", use_bias=False)(g_avg)
         return keras.models.Model(inputs, fc_out)
