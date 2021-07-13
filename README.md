@@ -17,7 +17,8 @@ keras 2.3.1
 ## Finished Models
 - VGGNet(stable)
 - ResNet(stable)
-- DenseNet
-- MobileNet_v1
+- DenseNet(stable)
+- MobileNet_v1(stable)
 - MobileNet_v2
 - MobileNet_v3
+- ShuffleNet
