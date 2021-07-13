@@ -7,13 +7,13 @@ class Mobilenet:
         self.l2_reg = keras.regularizers.l2(weight_decay)
         self.alpha = alpha
 
-    def mobilenetV2_stem(self, inputs):
+    def mobilenet_stem(self, inputs):
         '''64 x 64'''
         block1 = conv_bn(inputs, filter_size=32, kernel_size=(3, 3), strides=2,
                          padding="same", activation="relu", regularizer=self.l2_reg)
         return block1
 
-    def mobilenetV2_body(self, inputs):
+    def mobilenet_body(self, inputs):
         '''32 x 32'''
         layer1 = depthwise_separable_layer(inputs, filter_size=32, kernel_size=(3, 3), strides=1,
                                            activation="relu", alpha=2 * self.alpha, regularizer=self.l2_reg)
@@ -45,11 +45,11 @@ class Mobilenet:
                                            activation="relu", alpha=2 * self.alpha, regularizer=self.l2_reg)
 
         '''strides=2 in original'''
-        layer_out = depthwise_separable_layer(layer7, filter_size=1024, kernel_size=(3, 3), strides=2,
+        layer_out = depthwise_separable_layer(layer7, filter_size=1024, kernel_size=(3, 3), strides=1,
                                            activation="relu", alpha=self.alpha, regularizer=self.l2_reg)
         return layer_out
 
-    def mobilenetV2(self):
+    def mobilenet(self):
         inputs = keras.layers.Input(shape=self.input_shape)
         '''stem'''
         stem = self.mobilenet_stem(inputs)

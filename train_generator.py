@@ -6,6 +6,7 @@ from generator import Class_Generator
 from models.resnet import Resnet
 from models.vgg16 import VGGNET16
 from models.densenet import Densenet
+from models.mobileNet_v1 import Mobilenet
 from Utils.cyclical_learning_rate import CyclicLR
 from keras.callbacks import TensorBoard, ReduceLROnPlateau, ModelCheckpoint
 
@@ -70,14 +71,14 @@ def train():
     print("Step size: ", step_size)
 
     '''train'''
-    dn = Densenet(input_shape=input_shape, class_num=class_num, layer_num=121, weight_decay=weight_decay)
-    model = dn.densenet()
+    mb = Mobilenet(input_shape=input_shape, class_num=class_num, weight_decay=weight_decay)
+    model = mb.mobilenet()
     model.summary()
-    model.load_weights("./save_weights/densenet_00039.h5")
-    model.save("./test.h5")
+    # model.load_weights("./save_weights/densenet_00039.h5")
+    # model.save("./test.h5")
     model.compile(optimizer=optimizer, loss=loss, metrics=[metrics])
     model.fit_generator(train_gen, validation_data=valid_gen, epochs=epochs,
-                        max_queue_size=20, workers=4, initial_epoch=39,
+                        max_queue_size=20, workers=4, initial_epoch=0,
                         callbacks=[TensorBoard(log_dir),
                                    # ReduceLROnPlateau(monitor="val_loss", factor=0.5, patience=10),
                                    CyclicLR(base_lr=1e-5, max_lr=1e-3, step_size=step_size*8, mode="triangular2"),

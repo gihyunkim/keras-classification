@@ -29,7 +29,7 @@ class MobilenetV3:
     def mobilenetV3_stem(self, inputs):
         '''64 x 64'''
         layer = conv_bn(inputs, filter_size=16, kernel_size=(3, 3), strides=2,
-                         padding="same", activation="relu", regularizer=self.l2_reg)
+                         padding="same", activation=self.activation, regularizer=self.l2_reg)
         return layer
 
     def mobilenetV3_Small_body(self, inputs):
